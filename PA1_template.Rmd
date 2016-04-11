@@ -2,7 +2,9 @@
 title: "Activity Monitoring Analysis"
 author: "RPATAL"
 date: "April 10, 2016"
-output: html_document
+output: 
+  html_document: 
+    self_contained: no
 ---
 
 #Include required libraries.
