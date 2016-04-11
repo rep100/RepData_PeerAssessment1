@@ -1,40 +1,24 @@
----
-title: "Activity Monitoring Analysis"
-author: "RPATAL"
-date: "April 10, 2016"
-output: html_document
----
-
 #Include required libraries.
-```{r eval=TRUE}
 library(dplyr)
 library(ggplot2)
 library(mice)
 library(timeDate)
-```
 
+#Read file
+activity_raw <- read.csv("activity.csv")
 
-## Loading and preprocessing the data
-```{r eval=TRUE}
-#Read data and get dataset without missing data.
-activity_raw <- read.csv("/home/unknown/r_workspace/activity.csv")
+#Get dataset without missing data.
 activity <- na.omit(activity_raw)
-```
 
-## What is mean total number of steps taken per day?
-```{r}
 #Calculating total steps per day, mean and median
 activity_summary <- activity %>% group_by(date) %>% summarize(total_steps=sum(steps), mean_steps=mean(steps), median_steps=median(steps))
+
+#Transform data
 activity_summary <- transform(activity_summary, date=strptime(date, format = "%Y-%m-%d"))
-print(activity_summary)
 
 #Plot total steps. Since we already have calculated the total we can use a bar plot.
 ggplot(data=activity_summary, aes(activity_summary$date, activity_summary$total_steps)) + geom_bar(stat="identity") + ggtitle("Total steps per day") + ylab("Steps") + xlab("Date")
 
-```
-
-## What is the average daily activity pattern?
-```{r}
 #Create time series
 interval_average <- activity %>% group_by(interval) %>% summarize(average_steps=mean(steps))
 ggplot(interval_average, aes(interval_average$interval, interval_average$average_steps)) + geom_line() + xlab("Interval") + ylab("Average Steps") + ggtitle("Average steps by interval")
@@ -42,12 +26,7 @@ ggplot(interval_average, aes(interval_average$interval, interval_average$average
 #Get the interval with the higher steps average
 max_average_row <- which.max(interval_average$average_steps)
 max_average_interval <- interval_average[[max_average_row,1]]
-print(paste("The interval with the higher steps average is ", max_average_interval))
 
-```
-
-## Imputing missing values
-```{r}
 #Calculate the number of missing values.
 md.pattern(activity_raw)
 imputedValues <- mice(activity_raw, method = "pmm", seed = 500)
@@ -62,13 +41,9 @@ activity_imputed_summary <- transform(activity_imputed_summary, date=strptime(da
 #Create graphic
 ggplot(data=activity_imputed_summary, aes(activity_imputed_summary$date, activity_imputed_summary$total_steps)) + geom_bar(stat="identity") + ggtitle("Total steps per day (Imputed data)") + ylab("Steps") + xlab("Date")
 
-```
-
-## Are there differences in activity patterns between weekdays and weekends?
-```{r}
 #Transform data to create time series
 activity_imputed_date <- transform(activity_imputed, date=as.POSIXct(strptime(date, format = "%Y-%m-%d")))
 activity_imputed_clasif <- mutate(activity_imputed_date, type=ifelse(isWeekday(activity_imputed_date$date, wday=1:5), "WEEK", "WEEKEND"))
 interval_average_clas <- activity_imputed_clasif %>% group_by(interval, type) %>% summarize(average_steps=mean(steps))
 ggplot(interval_average_clas, aes(interval_average_clas$interval, interval_average_clas$average_steps)) + geom_line() + xlab("Interval") + ylab("Average Steps") + ggtitle("Average steps by interval") + facet_grid(type ~ .)
-```
+
