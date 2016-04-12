@@ -4,6 +4,7 @@ author: "RPATAL"
 date: "April 10, 2016"
 output: 
   html_document: 
+    keep_md: yes
     self_contained: no
 ---
 

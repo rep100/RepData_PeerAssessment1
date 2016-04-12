@@ -156,14 +156,14 @@ print(activity_summary)</code></pre>
 ## 53 2012-11-29        7047 24.4687500            0</code></pre>
 <pre class="r"><code>#Plot total steps. Since we already have calculated the total we can use a bar plot.
 ggplot(data=activity_summary, aes(activity_summary$date, activity_summary$total_steps)) + geom_bar(stat=&quot;identity&quot;) + ggtitle(&quot;Total steps per day&quot;) + ylab(&quot;Steps&quot;) + xlab(&quot;Date&quot;)</code></pre>
-<p><img src="PA1_template_files/figure-html/unnamed-chunk-3-1.png" title="" alt="" width="672" /></p>
+<p><img src="PA1_template_files/figure-html/unnamed-chunk-3-1.png" /></p>
 </div>
 <div id="what-is-the-average-daily-activity-pattern" class="section level2">
 <h2>What is the average daily activity pattern?</h2>
 <pre class="r"><code>#Create time series
 interval_average &lt;- activity %&gt;% group_by(interval) %&gt;% summarize(average_steps=mean(steps))
 ggplot(interval_average, aes(interval_average$interval, interval_average$average_steps)) + geom_line() + xlab(&quot;Interval&quot;) + ylab(&quot;Average Steps&quot;) + ggtitle(&quot;Average steps by interval&quot;)</code></pre>
-<p><img src="PA1_template_files/figure-html/unnamed-chunk-4-1.png" title="" alt="" width="672" /></p>
+<p><img src="PA1_template_files/figure-html/unnamed-chunk-4-1.png" /></p>
 <pre class="r"><code>#Get the interval with the higher steps average
 max_average_row &lt;- which.max(interval_average$average_steps)
 max_average_interval &lt;- interval_average[[max_average_row,1]]
@@ -216,7 +216,7 @@ activity_imputed_summary &lt;- transform(activity_imputed_summary, date=strptime
 
 #Create graphic
 ggplot(data=activity_imputed_summary, aes(activity_imputed_summary$date, activity_imputed_summary$total_steps)) + geom_bar(stat=&quot;identity&quot;) + ggtitle(&quot;Total steps per day (Imputed data)&quot;) + ylab(&quot;Steps&quot;) + xlab(&quot;Date&quot;)</code></pre>
-<p><img src="PA1_template_files/figure-html/unnamed-chunk-5-1.png" title="" alt="" width="672" /></p>
+<p><img src="PA1_template_files/figure-html/unnamed-chunk-5-1.png" /></p>
 </div>
 <div id="are-there-differences-in-activity-patterns-between-weekdays-and-weekends" class="section level2">
 <h2>Are there differences in activity patterns between weekdays and weekends?</h2>
@@ -225,7 +225,7 @@ activity_imputed_date &lt;- transform(activity_imputed, date=as.POSIXct(strptime
 activity_imputed_clasif &lt;- mutate(activity_imputed_date, type=ifelse(isWeekday(activity_imputed_date$date, wday=1:5), &quot;WEEK&quot;, &quot;WEEKEND&quot;))
 interval_average_clas &lt;- activity_imputed_clasif %&gt;% group_by(interval, type) %&gt;% summarize(average_steps=mean(steps))
 ggplot(interval_average_clas, aes(interval_average_clas$interval, interval_average_clas$average_steps)) + geom_line() + xlab(&quot;Interval&quot;) + ylab(&quot;Average Steps&quot;) + ggtitle(&quot;Average steps by interval&quot;) + facet_grid(type ~ .)</code></pre>
-<p><img src="PA1_template_files/figure-html/unnamed-chunk-6-1.png" title="" alt="" width="672" /></p>
+<p><img src="PA1_template_files/figure-html/unnamed-chunk-6-1.png" /></p>
 </div>
 </div>
 
